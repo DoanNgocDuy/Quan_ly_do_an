@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Danh Sách Đồ Án Sinh Viên Đăng Ký</title>
+    
+    <style>
+        /* CSS nội bộ để định dạng danh sách file nếu cần */
+        .file-list {
+            list-style: none; 
+            padding: 0; 
+            margin: 0;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .file-list li {
+            margin-bottom: 5px;
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+        /* Style cho textarea và button */
+        .nhan-xet-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            resize: vertical;
+            font-size: 0.9em;
+            padding: 4px;
+        }
+        .nhan-xet-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            float: right;
+            margin-top: 5px;
+        }
+        /* Đảm bảo cột hiển thị nhận xét tĩnh có kích thước phù hợp */
+        .nhan-xet-display {
+            min-width: 200px;
+            max-width: 300px;
+            overflow-y: auto; /* Thêm thanh cuộn nếu nhận xét quá dài */
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Danh Sách Đồ Án Sinh Viên Đăng Ký</h1>
+        <h2>Giảng viên: {{ giang_vien.Tengv }}</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="padding: 10px; margin-bottom: 10px; border: 1px solid {% if 'success' in message.tags %}green{% else %}red{% endif %}; background-color: {% if 'success' in message.tags %}#e6ffe6{% else %}#ffe6e6{% endif %};">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if ds_dang_ky %}
+            <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; text-align: left;">
+                <thead>
+                    <tr>
+                        <th>Mã Đồ Án</th>
+                        <th>Tên Đồ Án</th>
+                        <th>Mã Sinh Viên</th>
+                        <th>Tên Sinh Viên</th>
+                        <th>Email</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Files Đã Nộp</th> 
+                        <th>Nhận Xét Đã Lưu</th> 
+                        <th>Cập Nhật Nhận Xét</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dk in ds_dang_ky %}
+                        <tr>
+                            <td>{{ dk.DoAn.Ma_do_an }}</td>
+                            <td>{{ dk.DoAn.Ten_do_an }}</td>
+                            <td>{{ dk.SinhVien.Msv }}</td>
+                            <td>{{ dk.SinhVien.Tensv }}</td>
+                            <td>{{ dk.SinhVien.Email }}</td>
+                            <td>{{ dk.SinhVien.So_dien_thoai }}</td>
+                            
+                            <td>
+                                {% if dk.files_nop.all %}
+                                    <ul class="file-list">
+                                        {% for file in dk.files_nop.all %}
+                                            <li>
+                                                <a href="{{ file.file.url }}" 
+                                                   target="_blank" 
+                                                   title="{{ file.mo_ta_file|default:"Không mô tả" }}">
+                                                    
+                                                    💾 {{ file.file.name|slice:"-30:" }} 
+                                                </a> 
+                                                <br>
+                                                <small>({{ file.uploaded_at|date:"d/m H:i" }})</small>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    Chưa nộp file nào
+                                {% endif %}
+                            </td>
+                            
+                            <td class="nhan-xet-display">
+    {% if dk.nhan_xet_gv %}
+        <span style="color: darkgreen; display: block; white-space: pre-wrap;">{{ dk.nhan_xet_gv }}</span>
+    {% else %}
+        <span style="color: #666; font-style: italic;">Chưa có nhận xét.</span>
+    {% endif %}
+</td>
+
+<td class="nhan-xet-form" style="min-width: 220px;">
+    <form method="POST" style="margin: 0;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="luu_nhan_xet_nhanh">
+        <input type="hidden" name="dang_ky_id" value="{{ dk.id }}">
+        
+        <textarea name="nhan_xet" 
+                  rows="3" 
+                  placeholder="Nhập nhận xét mới..."></textarea>
+               
+        <button type="submit">Gửi</button>
+        <div style="clear: both;"></div>
+    </form>
+</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Chưa có sinh viên nào đăng ký đồ án của bạn.</p>
+        {% endif %}
+
+        <br>
+        <a class="back-link" href="{% url 'danh_sach_do_an' %}">Quay lại danh sách đồ án</a>
+    </div>
+</body>
+</html>

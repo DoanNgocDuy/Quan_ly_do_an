@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Danh sách khoa</title>
+</head>
+
+<body>
+<div >
+
+    <a class="btn-link"" href="{% url 'them_khoa' %}">Thêm khoa</a>
+
+    <h2 class="title">Danh sách các khoa</h2>
+
+    <table >
+        <thead>
+            <tr>
+                <th>Mã khoa</th>
+                <th>Tên khoa</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for khoa in ds_khoa %}
+                <tr>
+                    <td>{{ khoa.Makhoa }}</td>
+                    <td>{{ khoa.Tenkhoa }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">Không có dữ liệu</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a class="back-link" href="{% url 'danh_sach_do_an' %}">Quay lại danh sách đồ án</a>
+
+</div>
+</body>
+</html>

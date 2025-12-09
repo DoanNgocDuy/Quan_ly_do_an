@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Danh sách chuyên ngành</title>
+</head>
+<body>
+    <a class="btn-link" href="{% url 'them_chuyen_nganh' %}">Thêm chuyên ngành</a>
+    <h2>Danh sách các chuyên ngành</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Mã chuyên ngành</th>
+                <th>Tên chuyên ngành</th>
+                <th>Khoa</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cn in ds_chuyen_nganh %}
+                <tr>
+                    <td>{{ cn.Machuyennganh }}</td>
+                    <td>{{ cn.Tenchuyennganh }}</td>
+                    <td>{{ cn.Khoa }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">Không có dữ liệu</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a class="back-link" href="{% url 'danh_sach_do_an' %}">Quay lại danh sách đồ án</a>
+</body>
+</html>

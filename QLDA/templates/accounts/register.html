@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <title>Đăng Ký</title>
+</head>
+<body>
+    <div class="container-register">
+        <h2 class="title">Đăng Ký</h2>
+
+        <!-- 🔹 Hiển thị thông báo -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if 'error' in message.tags %}error-message{% elif 'success' in message.tags %}success-message{% else %}info-message{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color:gray; font-size:13px;"></p>
+        {% endif %}
+
+        <!-- 🔹 Form đăng ký -->
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <small class="help-text">{{ form.username.help_text }}</small>
+            <button type="submit">Đăng ký</button>
+        </form>
+
+        <p>Bạn đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập</a></p>
+    </div>
+</body>
+</html>

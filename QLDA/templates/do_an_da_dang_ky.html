@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Đồ Án Đã Đăng Ký</title>
+   
+</head>
+<body>
+    <div class="container do-an-da-dang-ky-page">
+        <h1 class="title">Đồ Án Đã Đăng Ký</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="
+                    {% if 'error' in message.tags %}
+                        error-message 
+                    {% elif 'success' in message.tags %}
+                        success-message
+                    {% else %}
+                        {{ message.tags }}
+                    {% endif %}
+                ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <br>
+
+        {% if do_an_da_dang_ky %}
+            {% for dang_ky in do_an_da_dang_ky %}
+                <div class="do-an">
+                    <h2>{{ dang_ky.DoAn.Ma_do_an }} - {{ dang_ky.DoAn.Ten_do_an }}</h2>
+                    <p>Mô tả: {{ dang_ky.DoAn.Mo_ta }}</p>
+                    <p>Khoa: {{ dang_ky.DoAn.Khoa.Tenkhoa }}</p>
+                    <p>Giảng viên hướng dẫn: {{ dang_ky.DoAn.GiangVien.Tengv }}</p>
+                    <p>Email: {{ dang_ky.DoAn.GiangVien.Email }}</p>
+                    <p>Số điện thoại: {{ dang_ky.DoAn.GiangVien.So_dien_thoai }}</p>
+
+                    <div class="gv-nhan-xet">
+                        <strong>Nhận xét từ Giảng viên ({{ dang_ky.DoAn.GiangVien.Tengv }}):</strong>
+                        {% if dang_ky.nhan_xet_gv %}
+                            <p>{{ dang_ky.nhan_xet_gv }}</p>
+                        {% else %}
+                            <p style="color: #6c757d;">(Chưa có nhận xét nào được gửi.)</p>
+                        {% endif %}
+                    </div>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="huy">
+                        <input type="hidden" name="do_an_id" value="{{ dang_ky.DoAn.id }}">
+                        <button type="submit">Hủy đăng ký</button>
+                    </form>
+                    
+                    <hr> 
+                    
+                    <h3>Nộp File Đồ Án 💾</h3>
+                <form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
+                    {% csrf_token %}
+                    
+                    <input type="hidden" name="action" value="nop_file">
+                    <input type="hidden" name="dang_ky_id" value="{{ dang_ky.id }}"> 
+                    
+                    <label for="id_file">File:</label>
+                    <input type="file" name="file" id="id_file" required> 
+                    
+                    <br><br>
+
+                    <label for="id_mo_ta_file">Mô tả file:</label>
+                    <input type="text" name="mo_ta_file" id="id_mo_ta_file" maxlength="100"> 
+                    
+                    <br><br>
+                    
+                    <button type="submit">Nộp File </button>
+                </form>
+                    <h3 style="margin-top: 15px;">Files đã nộp:</h3>
+                    <ul>
+                        {% for f in dang_ky.files_nop.all %} 
+                            <li>
+                                <strong>{{ f.mo_ta_file|default:"(Không mô tả)" }}</strong>: 
+                                <a href="{{ f.file.url }}" target="_blank">
+                                    {{ f.file.name|slice:"-30:" }} 
+                                </a>
+                                (Nộp lúc: {{ f.uploaded_at|date:"d/m/Y H:i" }})
+
+                                <form method="POST" action="{% url 'file_delete' f.id %}" style="display:inline; margin-left: 10px;">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                                    class="action-btn delete-btn" 
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa file {{ f.file.name|slice:"-20:" }}?');"
+                                                    style="color: red; background: none; border: none; cursor: pointer;">
+                                        [Xóa]
+                                    </button>
+                                </form>
+                                </li>
+                        {% empty %}
+                            <li>Chưa nộp file nào.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>Chưa đăng ký đồ án nào.</p>
+        {% endif %}
+
+        <br>
+        <a class="back-link" href="{% url 'danh_sach_do_an' %}">Quay lại danh sách đồ án</a>
+    </div>
+</body>
+</html>

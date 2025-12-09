@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Sửa Phòng</title>
+    
+</head>
+<body>
+    <div class="page-edit-project container">
+        <h1 class="title">Sửa Thông Tin Đồ án</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}  
+            <button type="submit">Lưu Thay Đổi</button>
+        </form>
+        <br>
+        <a class="back-link" href="{% url 'danh_sach_do_an' %}">Quay lại danh sách đồ án</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Chi Tiết Đồ Án</title>
+</head>
+<body>
+    <div class="container chi-tiet-do-an-page">
+        <h1 class="title">Chi Tiết Đồ Án</h1>
+        <p>Mã Đồ Án: {{ do_an.Ma_do_an }}</p>
+        <p>Tên Đồ Án: {{ do_an.Ten_do_an }}</p>
+        <p>Mô Tả: {{ do_an.Mo_ta }}</p>
+        <p>Khoa: {{ do_an.Khoa.Tenkhoa }}</p>
+        <p>Giảng Viên Hướng Dẫn: {{ do_an.GiangVien.Tengv }}</p>
+
+        <h2 class="title">Thông Tin Giảng Viên</h2>
+        <p>Mã Giảng Viên: {{ do_an.GiangVien.Mgv }}</p>
+        <p>Tên Giảng Viên: {{ do_an.GiangVien.Tengv }}</p>
+        <p>Email: {{ do_an.GiangVien.Email }}</p>
+        <p>Số Điện Thoại: {{ do_an.GiangVien.So_dien_thoai }}</p>
+
+        {% if not giang_vien_xem %}
+            <h2 class="title">Đăng Ký Đồ Án</h2>
+            <form method="post" class="dang-ky-form">
+                {% csrf_token %}
+                <div class="btn-wrapper">
+                    <button type="submit">Đăng Ký</button>
+                </div>
+            </form>
+
+            {% if error_message %}
+                <div class="error-message">{{ error_message }}</div>
+            {% endif %}
+            {% if success_message %}
+                <div class="success-message">{{ success_message }}</div>
+            {% endif %}
+        {% endif %}
+
+        <br>
+        <a class="back-link" href="{% url 'danh_sach_do_an' %}">Quay lại danh sách đồ án</a>
+        
+    </div>
+</body>
+</html>

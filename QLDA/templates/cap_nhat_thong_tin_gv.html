@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Cập nhật thông tin sinh viên</title>
+</head>
+<body>
+    <div class="page-update-user container">
+    <h1 class="title">Cập nhật thông tin giảng viên</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            {{ field.label }}
+            {{ field }}
+            <br>
+            <br>
+        {% endfor %}
+        <button type="submit">Cập nhật</button>
+    </form>
+    <br>
+    <a class="back-link" href="{% url 'danh_sach_do_an' %}">Quay lại danh sách đồ án</a>
+    </div>
+</body>
+</html>

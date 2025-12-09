@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Danh Sách Đồ Án</title>
+</head>
+<body>
+    <nav>
+    {% if user.is_superuser %}
+    <a href="{% url 'them_do_an' %}">Thêm đồ án</a>
+    <a href="{% url 'danh_sach_khoa' %}">Danh sách khoa</a>
+    <a href="{% url 'danh_sach_chuyen_nganh' %}">Danh sách chuyên ngành</a>
+    {% endif %}
+    <a href="{% url 'ds_do_an_da_dang_ky_gv' %}">Đồ án sinh viên đã đăng ký</a>
+    <a href="{% url 'do_an_da_dang_ky' %}">Đồ án của sinh viên</a>
+    <a href="{% url 'cap_nhat_thong_tin' %}">Cập nhật thông tin</a>
+    <a href="{% url 'logout' %}">Đăng xuất</a>
+    </nav>
+    <h1 class="title">DANH SÁCH ĐỒ ÁN</h1>
+
+    <form method="get" action="" class ="search-form">
+        {{ form.as_p }}
+        <button type="submit">Tìm kiếm</button>
+    </form>
+<br>
+    {% if messages %}
+    <div class="success-message">
+        {% for message in messages %}
+        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>Mã Đồ Án</th>
+                <th>Tên Đồ Án</th>
+                <th>Khoa</th>
+                <th>Chuyên ngành</th>
+                <th>Giảng viên hướng dẫn</th>
+                {% if user.is_superuser %}
+                <th>Số lượng đăng ký</th>
+                <th>Sửa</th>
+                <th>Xoá</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for do_an in danh_sach_do_an %}
+            <tr>
+                <td>{{ do_an.Ma_do_an }}</td>
+                <td><a href="{% url 'chi_tiet_do_an' do_an.pk %}">{{ do_an.Ten_do_an }}</a></td>
+                <td>{{ do_an.Khoa }}</td>
+                <td>{{ do_an.ChuyenNganh }}</td>
+                <td>{{ do_an.GiangVien }}</td>
+                {% if user.is_superuser %}
+                <td>{{ do_an.So_luong_sv_dk }}</td>
+                <td><a href="{% url 'sua_do_an' do_an.pk %}">Sửa</a></td>
+                <td><a href="{% url 'xoa_do_an' do_an.pk %}">Xoá</a></td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td >Không có đồ án nào.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
